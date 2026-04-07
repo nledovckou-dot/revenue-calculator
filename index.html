@@ -122,6 +122,37 @@ body{
   .header{padding:20px}
   .hero-3d{display:none}
 }
+@media(max-width:600px){
+  .hero h1{font-size:28px}
+  .hero p{font-size:15px}
+  .header{padding:16px}
+  .main{padding:0 16px 40px;gap:20px}
+  .form-card{padding:20px;position:static}
+  .field input{font-size:16px;padding:12px 14px}
+  .field label{font-size:11px;letter-spacing:1px}
+  .btn-calculate{padding:14px;font-size:14px}
+  .scenarios-grid{grid-template-columns:1fr;gap:12px}
+  .scenario-card{padding:20px 18px}
+  .scenario-revenue{font-size:24px}
+  .chart-container,.details-section,.methodology,.benefits{padding:20px 16px}
+  .chart-container h3,.details-section h3,.methodology h3,.benefits h3{font-size:14px}
+  .bar-chart{height:160px;gap:10px}
+  .bar-value{font-size:11px;top:-22px}
+  .bar-label{font-size:10px}
+  .price-table-wrap{overflow-x:auto;margin:0 -16px;padding:0 16px}
+  .price-table{min-width:480px}
+  .price-table th,.price-table td{padding:8px 10px;font-size:12px}
+  .price-table td:first-child{font-size:11px}
+  .formula-block{font-size:11px;padding:14px;line-height:1.7}
+  .benefits-grid{grid-template-columns:1fr;gap:10px}
+  .benefit-item{padding:12px}
+  .benefit-icon{width:34px;height:34px;min-width:34px;font-size:15px}
+  .benefit-title{font-size:13px}
+  .benefit-desc{font-size:11px}
+  .section-num{font-size:22px}
+  .footer{padding:24px 16px;font-size:12px}
+  .decor-3d{display:none}
+}
 
 /* ===== FORM CARD ===== */
 .form-card{
@@ -234,7 +265,7 @@ body{
   gap:16px;
   margin-bottom:24px;
 }
-@media(max-width:700px){
+@media(max-width:860px){
   .scenarios-grid{grid-template-columns:1fr}
 }
 
@@ -505,7 +536,7 @@ body{
   grid-template-columns:1fr 1fr;
   gap:16px;
 }
-@media(max-width:700px){
+@media(max-width:860px){
   .benefits-grid{grid-template-columns:1fr}
 }
 .benefit-item{
@@ -639,6 +670,7 @@ body{
     <!-- PRICE TABLE -->
     <div class="details-section">
       <h3><span class="section-num">02</span> Таблица цен по сегментам</h3>
+      <div class="price-table-wrap">
       <table class="price-table" id="price-table">
         <thead>
           <tr>
@@ -649,6 +681,7 @@ body{
         </thead>
         <tbody id="price-tbody"></tbody>
       </table>
+      </div>
     </div>
 
     <!-- BENEFITS -->
