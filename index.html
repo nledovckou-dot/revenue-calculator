@@ -118,6 +118,9 @@ body{
   gap:32px;
   align-items:start;
 }
+@media(min-width:961px){
+  .form-card{position:sticky;top:24px}
+}
 @media(max-width:960px){
   .main{grid-template-columns:1fr;padding:0 20px 60px}
   .hero{padding:32px 20px 24px}
@@ -131,7 +134,7 @@ body{
   .header{padding:14px 16px}
   .logo-text{font-size:18px}
   .main{padding:0 16px 40px;gap:16px}
-  .form-card{padding:16px;position:static}
+  .form-card{padding:16px}
   .form-card h2{font-size:16px;margin-bottom:4px}
   .form-card .form-subtitle{margin-bottom:16px;font-size:12px}
   .field{margin-bottom:14px}
@@ -176,7 +179,6 @@ body{
   background:var(--card);
   border-radius:var(--radius);
   padding:32px;
-  position:sticky;top:24px;
   border:1px solid rgba(255,255,255,.04);
 }
 .form-card h2{
