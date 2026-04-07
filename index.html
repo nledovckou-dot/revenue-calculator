@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Калькулятор выручки — auto.ru бизнес</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#1C1A1C;
+  --card:#2A2628;
+  --card-hover:#3B373B;
+  --red:#E60000;
+  --red-hover:#FF1A1A;
+  --white:#FFFFFF;
+  --gray:#858585;
+  --light-gray:#C8C8C8;
+  --beige:#DBD0C3;
+  --blue:#3838E5;
+  --orange:#FFB445;
+  --green:#2ECC71;
+  --radius:16px;
+  --radius-sm:10px;
+}
+html{font-size:16px;-webkit-font-smoothing:antialiased}
+body{
+  font-family:Arial,Helvetica,sans-serif;
+  background:var(--bg);
+  color:var(--white);
+  min-height:100vh;
+  line-height:1.5;
+}
+
+/* ===== HEADER ===== */
+.header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:24px 40px;
+  border-bottom:1px solid rgba(255,255,255,.08);
+}
+.logo{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--white)}
+.logo-icon{
+  width:36px;height:36px;
+  background:var(--red);
+  border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  font-weight:700;font-size:18px;color:#fff;
+}
+.logo-text{font-size:20px;font-weight:700;letter-spacing:-.3px}
+.logo-text span{color:var(--gray);font-weight:400}
+
+/* ===== HERO ===== */
+.hero{
+  text-align:center;
+  padding:64px 40px 48px;
+  max-width:720px;
+  margin:0 auto;
+}
+.hero h1{
+  font-size:clamp(28px,4vw,42px);
+  font-weight:800;
+  letter-spacing:-.5px;
+  line-height:1.15;
+  margin-bottom:16px;
+}
+.hero h1 .accent{color:var(--red)}
+.hero p{
+  font-size:18px;
+  color:var(--gray);
+  max-width:520px;
+  margin:0 auto;
+}
+
+/* ===== MAIN LAYOUT ===== */
+.main{
+  max-width:1120px;
+  margin:0 auto;
+  padding:0 40px 80px;
+  display:grid;
+  grid-template-columns:400px 1fr;
+  gap:32px;
+  align-items:start;
+}
+@media(max-width:900px){
+  .main{grid-template-columns:1fr;padding:0 20px 60px}
+  .hero{padding:40px 20px 32px}
+  .header{padding:20px}
+}
+
+/* ===== FORM CARD ===== */
+.form-card{
+  background:var(--card);
+  border-radius:var(--radius);
+  padding:32px;
+  position:sticky;top:24px;
+}
+.form-card h2{
+  font-size:20px;
+  font-weight:700;
+  margin-bottom:24px;
+}
+.field{margin-bottom:24px}
+.field label{
+  display:block;
+  font-size:13px;
+  font-weight:600;
+  color:var(--gray);
+  text-transform:uppercase;
+  letter-spacing:.5px;
+  margin-bottom:8px;
+}
+.field input{
+  width:100%;
+  padding:14px 16px;
+  background:var(--bg);
+  border:2px solid transparent;
+  border-radius:var(--radius-sm);
+  color:var(--white);
+  font-size:18px;
+  font-family:inherit;
+  font-weight:600;
+  transition:border-color .2s;
+  outline:none;
+}
+.field input::placeholder{color:var(--gray);font-weight:400}
+.field input:focus{border-color:var(--red)}
+.field .hint{
+  font-size:12px;
+  color:var(--gray);
+  margin-top:6px;
+}
+.field .error{
+  font-size:12px;
+  color:var(--red);
+  margin-top:6px;
+  display:none;
+}
+.field.has-error .error{display:block}
+.field.has-error input{border-color:var(--red)}
+
+.btn-calculate{
+  width:100%;
+  padding:16px;
+  background:var(--red);
+  color:#fff;
+  border:none;
+  border-radius:var(--radius-sm);
+  font-size:16px;
+  font-weight:700;
+  font-family:inherit;
+  cursor:pointer;
+  transition:background .2s,transform .1s;
+  text-transform:uppercase;
+  letter-spacing:.5px;
+}
+.btn-calculate:hover{background:var(--red-hover)}
+.btn-calculate:active{transform:scale(.98)}
+
+.price-range-badge{
+  margin-top:20px;
+  padding:14px 16px;
+  background:rgba(230,0,0,.08);
+  border:1px solid rgba(230,0,0,.2);
+  border-radius:var(--radius-sm);
+  font-size:13px;
+  color:var(--beige);
+  display:none;
+}
+.price-range-badge.visible{display:block}
+.price-range-badge strong{color:var(--white);font-size:14px;display:block;margin-bottom:4px}
+
+/* ===== RESULTS ===== */
+.results{display:none}
+.results.visible{display:block}
+
+.scenarios-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:16px;
+  margin-bottom:32px;
+}
+@media(max-width:700px){
+  .scenarios-grid{grid-template-columns:1fr}
+}
+
+.scenario-card{
+  background:var(--card);
+  border-radius:var(--radius);
+  padding:28px 24px;
+  transition:transform .2s,box-shadow .2s;
+  border:1px solid transparent;
+  position:relative;
+  overflow:hidden;
+}
+.scenario-card::before{
+  content:'';
+  position:absolute;
+  top:0;left:0;right:0;
+  height:4px;
+}
+.scenario-card.conservative::before{background:var(--gray)}
+.scenario-card.base::before{background:var(--orange)}
+.scenario-card.aggressive::before{background:var(--red)}
+
+.scenario-card:hover{
+  transform:translateY(-4px);
+  box-shadow:0 12px 40px rgba(0,0,0,.4);
+}
+.scenario-card.base{
+  border-color:var(--orange);
+}
+
+.scenario-label{
+  font-size:12px;
+  font-weight:700;
+  text-transform:uppercase;
+  letter-spacing:1px;
+  margin-bottom:4px;
+}
+.scenario-card.conservative .scenario-label{color:var(--gray)}
+.scenario-card.base .scenario-label{color:var(--orange)}
+.scenario-card.aggressive .scenario-label{color:var(--red)}
+
+.scenario-conversion{
+  font-size:13px;
+  color:var(--gray);
+  margin-bottom:20px;
+}
+
+.scenario-revenue{
+  font-size:clamp(28px,3vw,36px);
+  font-weight:800;
+  letter-spacing:-.5px;
+  line-height:1.1;
+  margin-bottom:4px;
+}
+.scenario-card.conservative .scenario-revenue{color:var(--light-gray)}
+.scenario-card.base .scenario-revenue{color:var(--orange)}
+.scenario-card.aggressive .scenario-revenue{color:var(--red)}
+
+.scenario-period{
+  font-size:13px;
+  color:var(--gray);
+  margin-bottom:16px;
+}
+
+.scenario-year{
+  padding-top:16px;
+  border-top:1px solid rgba(255,255,255,.06);
+}
+.scenario-year-label{
+  font-size:11px;
+  color:var(--gray);
+  text-transform:uppercase;
+  letter-spacing:.5px;
+}
+.scenario-year-value{
+  font-size:20px;
+  font-weight:700;
+  margin-top:2px;
+}
+
+.scenario-sets{
+  margin-top:12px;
+  font-size:12px;
+  color:var(--gray);
+}
+.scenario-sets strong{color:var(--beige)}
+
+/* ===== DETAILS TABLE ===== */
+.details-section{
+  background:var(--card);
+  border-radius:var(--radius);
+  padding:28px 24px;
+  margin-bottom:32px;
+}
+.details-section h3{
+  font-size:16px;
+  font-weight:700;
+  margin-bottom:20px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.details-section h3 .icon{
+  width:24px;height:24px;
+  background:rgba(230,0,0,.12);
+  border-radius:6px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;
+}
+
+.price-table{width:100%;border-collapse:collapse}
+.price-table th{
+  text-align:left;
+  font-size:11px;
+  font-weight:700;
+  color:var(--gray);
+  text-transform:uppercase;
+  letter-spacing:.5px;
+  padding:10px 12px;
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+.price-table td{
+  padding:10px 12px;
+  font-size:14px;
+  border-bottom:1px solid rgba(255,255,255,.03);
+}
+.price-table tr.active{background:rgba(230,0,0,.06);border-radius:8px}
+.price-table tr.active td{color:var(--white);font-weight:600}
+.price-table tr:not(.active) td{color:var(--gray)}
+
+.price-table td:last-child,
+.price-table th:last-child{text-align:right}
+
+/* ===== CHART ===== */
+.chart-container{
+  background:var(--card);
+  border-radius:var(--radius);
+  padding:28px 24px;
+  margin-bottom:32px;
+}
+.chart-container h3{
+  font-size:16px;
+  font-weight:700;
+  margin-bottom:24px;
+}
+.bar-chart{
+  display:flex;
+  align-items:flex-end;
+  gap:12px;
+  height:200px;
+  padding-bottom:32px;
+  position:relative;
+}
+.bar-group{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  height:100%;
+  justify-content:flex-end;
+}
+.bar{
+  width:100%;
+  max-width:80px;
+  border-radius:8px 8px 0 0;
+  transition:height .6s cubic-bezier(.4,0,.2,1);
+  position:relative;
+  min-height:4px;
+}
+.bar-value{
+  position:absolute;
+  top:-24px;
+  left:50%;
+  transform:translateX(-50%);
+  font-size:12px;
+  font-weight:700;
+  white-space:nowrap;
+}
+.bar-label{
+  margin-top:8px;
+  font-size:11px;
+  color:var(--gray);
+  text-align:center;
+  text-transform:uppercase;
+  letter-spacing:.3px;
+}
+.bar.conservative{background:var(--gray)}
+.bar.conservative .bar-value{color:var(--light-gray)}
+.bar.base{background:var(--orange)}
+.bar.base .bar-value{color:var(--orange)}
+.bar.aggressive{background:var(--red)}
+.bar.aggressive .bar-value{color:var(--red)}
+
+/* ===== BENEFITS ===== */
+.benefits{
+  background:var(--card);
+  border-radius:var(--radius);
+  padding:28px 24px;
+}
+.benefits h3{
+  font-size:16px;
+  font-weight:700;
+  margin-bottom:20px;
+}
+.benefits-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:16px;
+}
+@media(max-width:700px){
+  .benefits-grid{grid-template-columns:1fr}
+}
+.benefit-item{
+  display:flex;
+  gap:12px;
+  align-items:flex-start;
+}
+.benefit-icon{
+  width:36px;height:36px;
+  min-width:36px;
+  background:rgba(230,0,0,.1);
+  border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;
+}
+.benefit-title{font-size:14px;font-weight:700;margin-bottom:2px}
+.benefit-desc{font-size:12px;color:var(--gray);line-height:1.4}
+
+/* ===== FOOTER ===== */
+.footer{
+  text-align:center;
+  padding:32px 40px;
+  border-top:1px solid rgba(255,255,255,.06);
+  font-size:13px;
+  color:var(--gray);
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(20px)}
+  to{opacity:1;transform:translateY(0)}
+}
+.animate{animation:fadeUp .5s ease forwards}
+.animate-delay-1{animation-delay:.1s;opacity:0}
+.animate-delay-2{animation-delay:.2s;opacity:0}
+.animate-delay-3{animation-delay:.3s;opacity:0}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <a href="#" class="logo">
+    <div class="logo-icon">A</div>
+    <div class="logo-text">auto.ru <span>бизнес</span></div>
+  </a>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <h1>Калькулятор <span class="accent">выручки</span></h1>
+  <p>Рассчитайте потенциальную выручку от приёма и перепродажи комплектов шин и колёс</p>
+</section>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- FORM -->
+  <div class="form-card">
+    <h2>Параметры расчёта</h2>
+
+    <div class="field" id="field-cars">
+      <label for="cars">Количество автомобилей в месяц</label>
+      <input type="text" id="cars" inputmode="numeric" placeholder="Например, 200">
+      <div class="hint">Среднее количество автомобилей, проходящих через ДЦ</div>
+      <div class="error">Введите целое число больше 0</div>
+    </div>
+
+    <div class="field" id="field-price">
+      <label for="price">Средняя стоимость автомобиля, &#8381;</label>
+      <input type="text" id="price" inputmode="numeric" placeholder="Например, 3 000 000">
+      <div class="hint">Средняя цена авто в вашем ДЦ</div>
+      <div class="error">Введите целое число больше 0</div>
+    </div>
+
+    <button class="btn-calculate" id="btn-calc">Рассчитать</button>
+
+    <div class="price-range-badge" id="range-badge">
+      <strong id="range-label"></strong>
+      <span id="range-prices"></span>
+    </div>
+  </div>
+
+  <!-- RESULTS -->
+  <div class="results" id="results">
+
+    <!-- SCENARIO CARDS -->
+    <div class="scenarios-grid" id="scenarios-grid"></div>
+
+    <!-- BAR CHART -->
+    <div class="chart-container">
+      <h3>Сравнение сценариев — выручка в год</h3>
+      <div class="bar-chart" id="bar-chart"></div>
+    </div>
+
+    <!-- PRICE TABLE -->
+    <div class="details-section">
+      <h3><span class="icon">&#x2630;</span> Таблица цен по сегментам</h3>
+      <table class="price-table" id="price-table">
+        <thead>
+          <tr>
+            <th>Ценовой сегмент</th>
+            <th>Только шины</th>
+            <th>Шины + диски</th>
+          </tr>
+        </thead>
+        <tbody id="price-tbody"></tbody>
+      </table>
+    </div>
+
+    <!-- BENEFITS -->
+    <div class="benefits">
+      <h3>Преимущества Авто.ру Бизнес</h3>
+      <div class="benefits-grid">
+        <div class="benefit-item">
+          <div class="benefit-icon">&#x2714;</div>
+          <div>
+            <div class="benefit-title">Полный цикл учёта</div>
+            <div class="benefit-desc">Приём, хранение и перепродажа шин и дисков в одной системе</div>
+          </div>
+        </div>
+        <div class="benefit-item">
+          <div class="benefit-icon">&#x1F50D;</div>
+          <div>
+            <div class="benefit-title">Быстрый подбор</div>
+            <div class="benefit-desc">Моментальный поиск подходящих комплектов для клиента</div>
+          </div>
+        </div>
+        <div class="benefit-item">
+          <div class="benefit-icon">&#x1F4CA;</div>
+          <div>
+            <div class="benefit-title">Учёт маржи (GM1)</div>
+            <div class="benefit-desc">Прозрачный расчёт маржинальности по каждой сделке</div>
+          </div>
+        </div>
+        <div class="benefit-item">
+          <div class="benefit-icon">&#x1F680;</div>
+          <div>
+            <div class="benefit-title">Публикация на Авито</div>
+            <div class="benefit-desc">Автоматическая выгрузка объявлений на площадки</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  auto.ru бизнес &mdash; инструменты для дилеров
+</footer>
+
+<script>
+// ===== DATA =====
+const CONFIG = {
+  ranges: [
+    { maxCarPrice: 1000000, label: "До 1 000 000 ₽", tiresOnly: { min: 5000, max: 7000 }, tiresAndWheels: { min: 11000, max: 14000 } },
+    { maxCarPrice: 1500000, label: "1 000 001 – 1 500 000 ₽", tiresOnly: { min: 9000, max: 11000 }, tiresAndWheels: { min: 15000, max: 18000 } },
+    { maxCarPrice: 2000000, label: "1 500 001 – 2 000 000 ₽", tiresOnly: { min: 13000, max: 14000 }, tiresAndWheels: { min: 21000, max: 24000 } },
+    { maxCarPrice: 3000000, label: "2 000 001 – 3 000 000 ₽", tiresOnly: { min: 16000, max: 20000 }, tiresAndWheels: { min: 27000, max: 32000 } },
+    { maxCarPrice: 5000000, label: "3 000 001 – 5 000 000 ₽", tiresOnly: { min: 23000, max: 27000 }, tiresAndWheels: { min: 36000, max: 45000 } },
+    { maxCarPrice: 6000000, label: "5 000 001 – 6 000 000 ₽", tiresOnly: { min: 32000, max: 41000 }, tiresAndWheels: { min: 54000, max: 68000 } },
+    { maxCarPrice: 8000000, label: "6 000 001 – 8 000 000 ₽", tiresOnly: { min: 41000, max: 54000 }, tiresAndWheels: { min: 72000, max: 90000 } },
+    { maxCarPrice: 10000000, label: "8 000 001 – 10 000 000 ₽", tiresOnly: { min: 54000, max: 72000 }, tiresAndWheels: { min: 99000, max: 126000 } },
+    { maxCarPrice: 15000000, label: "10 000 001 – 15 000 000 ₽", tiresOnly: { min: 72000, max: 108000 }, tiresAndWheels: { min: 135000, max: 198000 } }
+  ],
+  shares: { tireOnlyShare: 0.8, tireWheelShare: 0.2 },
+  scenarios: {
+    conservative: { label: "Консервативный", conversionRate: 0.35, pricePoint: "min" },
+    base: { label: "Базовый", conversionRate: 0.5, pricePoint: "mid" },
+    aggressive: { label: "Агрессивный", conversionRate: 0.8, pricePoint: "max" }
+  }
+};
+
+// ===== UTILS =====
+function fmt(n) {
+  return Math.round(n).toLocaleString('ru-RU');
+}
+
+function fmtShort(n) {
+  if (n >= 1000000) return (n / 1000000).toFixed(1).replace('.0', '') + ' млн ₽';
+  if (n >= 1000) return Math.round(n / 1000) + ' тыс ₽';
+  return fmt(n) + ' ₽';
+}
+
+function getPrice(range, point) {
+  if (point === 'min') return range.min;
+  if (point === 'max') return range.max;
+  return (range.min + range.max) / 2;
+}
+
+function findRange(avgPrice) {
+  return CONFIG.ranges.find(r => avgPrice <= r.maxCarPrice) || CONFIG.ranges[CONFIG.ranges.length - 1];
+}
+
+function parseNum(str) {
+  return parseInt(str.replace(/\s/g, ''), 10);
+}
+
+function formatInput(input) {
+  const raw = input.value.replace(/\D/g, '');
+  if (!raw) { input.value = ''; return; }
+  input.value = parseInt(raw, 10).toLocaleString('ru-RU');
+}
+
+// ===== CALCULATE =====
+function calculate(carsPerMonth, avgPrice) {
+  const range = findRange(avgPrice);
+  const { tireOnlyShare, tireWheelShare } = CONFIG.shares;
+  const results = [];
+
+  for (const [key, sc] of Object.entries(CONFIG.scenarios)) {
+    const tirePrice = getPrice(range.tiresOnly, sc.pricePoint);
+    const wheelPrice = getPrice(range.tiresAndWheels, sc.pricePoint);
+    const accepted = carsPerMonth * sc.conversionRate;
+    const revenueMonth = accepted * tireOnlyShare * tirePrice + accepted * tireWheelShare * wheelPrice;
+
+    results.push({
+      key, label: sc.label,
+      conversionRate: sc.conversionRate,
+      accepted: Math.round(accepted),
+      revenueMonth,
+      revenueYear: revenueMonth * 12,
+      tirePrice, wheelPrice
+    });
+  }
+
+  return { range, results };
+}
+
+// ===== RENDER =====
+function renderScenarios(results) {
+  const grid = document.getElementById('scenarios-grid');
+  grid.innerHTML = results.map((s, i) => `
+    <div class="scenario-card ${s.key} animate animate-delay-${i + 1}">
+      <div class="scenario-label">${s.label}</div>
+      <div class="scenario-conversion">Конверсия ${Math.round(s.conversionRate * 100)}%</div>
+      <div class="scenario-revenue">${fmtShort(s.revenueMonth)}</div>
+      <div class="scenario-period">в месяц</div>
+      <div class="scenario-year">
+        <div class="scenario-year-label">В год</div>
+        <div class="scenario-year-value">${fmtShort(s.revenueYear)}</div>
+      </div>
+      <div class="scenario-sets">Комплектов в мес: <strong>${s.accepted}</strong></div>
+    </div>
+  `).join('');
+}
+
+function renderChart(results) {
+  const chart = document.getElementById('bar-chart');
+  const maxVal = Math.max(...results.map(r => r.revenueYear));
+  chart.innerHTML = results.map(s => {
+    const pct = Math.max((s.revenueYear / maxVal) * 100, 5);
+    return `
+      <div class="bar-group">
+        <div class="bar ${s.key}" style="height:${pct}%">
+          <div class="bar-value">${fmtShort(s.revenueYear)}</div>
+        </div>
+        <div class="bar-label">${s.label}</div>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderPriceTable(activeRange) {
+  const tbody = document.getElementById('price-tbody');
+  tbody.innerHTML = CONFIG.ranges.map(r => {
+    const isActive = r.maxCarPrice === activeRange.maxCarPrice;
+    return `
+      <tr class="${isActive ? 'active' : ''}">
+        <td>${r.label}</td>
+        <td>${fmt(r.tiresOnly.min)} – ${fmt(r.tiresOnly.max)} ₽</td>
+        <td>${fmt(r.tiresAndWheels.min)} – ${fmt(r.tiresAndWheels.max)} ₽</td>
+      </tr>
+    `;
+  }).join('');
+}
+
+function renderRangeBadge(range, results) {
+  const badge = document.getElementById('range-badge');
+  const base = results.find(r => r.key === 'base');
+  document.getElementById('range-label').textContent = 'Ваш сегмент: ' + range.label;
+  document.getElementById('range-prices').textContent =
+    `Шины: ${fmt(base.tirePrice)} ₽ · Шины+диски: ${fmt(base.wheelPrice)} ₽ (базовый сценарий)`;
+  badge.classList.add('visible');
+}
+
+// ===== FORM LOGIC =====
+const carsInput = document.getElementById('cars');
+const priceInput = document.getElementById('price');
+
+priceInput.addEventListener('input', () => formatInput(priceInput));
+carsInput.addEventListener('input', () => formatInput(carsInput));
+
+function validate() {
+  let ok = true;
+  const cars = parseNum(carsInput.value);
+  const price = parseNum(priceInput.value);
+
+  const fc = document.getElementById('field-cars');
+  const fp = document.getElementById('field-price');
+  fc.classList.toggle('has-error', !(cars > 0));
+  fp.classList.toggle('has-error', !(price > 0));
+  if (!(cars > 0) || !(price > 0)) ok = false;
+  return ok ? { cars, price } : null;
+}
+
+document.getElementById('btn-calc').addEventListener('click', () => {
+  const data = validate();
+  if (!data) return;
+
+  const { range, results } = calculate(data.cars, data.price);
+
+  renderScenarios(results);
+  renderChart(results);
+  renderPriceTable(range);
+  renderRangeBadge(range, results);
+
+  const el = document.getElementById('results');
+  el.classList.add('visible');
+  el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+});
+
+// Enter to submit
+document.querySelectorAll('.field input').forEach(inp => {
+  inp.addEventListener('keydown', e => {
+    if (e.key === 'Enter') document.getElementById('btn-calc').click();
+  });
+});
+</script>
+</body>
+</html>
