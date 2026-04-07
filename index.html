@@ -2,7 +2,9 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
 <title>Калькулятор выручки — auto.ru бизнес</title>
 <style>
 @font-face{font-family:'YS Geo';src:url('fonts/ys-geo-regular.ttf') format('truetype');font-weight:400;font-display:swap}
@@ -150,9 +152,10 @@ body{
   .scenario-sets{font-size:11px}
   .chart-container,.details-section,.methodology,.benefits{padding:16px 14px}
   .chart-container h3,.details-section h3,.methodology h3,.benefits h3{font-size:13px}
-  .bar-chart{height:140px;gap:8px}
-  .bar-value{font-size:10px;top:-20px}
-  .bar-label{font-size:9px}
+  .bar-chart{height:140px;gap:6px;overflow:visible}
+  .bar-value{font-size:10px;top:-18px}
+  .bar-label{font-size:8px;letter-spacing:0}
+  .chart-container{overflow:visible}
   .price-table-wrap{overflow-x:auto;margin:0 -14px;padding:0 14px}
   .price-table{min-width:460px}
   .price-table th,.price-table td{padding:7px 8px;font-size:11px}
@@ -875,8 +878,8 @@ document.getElementById('btn-calc').addEventListener('click', function() {
   var el = document.getElementById('results');
   el.classList.add('visible');
   setTimeout(function() {
-    document.getElementById('scenarios-grid').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-  }, 50);
+    document.getElementById('scenarios-grid').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 100);
 });
 
 document.querySelectorAll('.field input').forEach(function(inp) {
@@ -884,6 +887,18 @@ document.querySelectorAll('.field input').forEach(function(inp) {
     if (e.key === 'Enter') document.getElementById('btn-calc').click();
   });
 });
+
+// Auto-calculate with default values on page load
+(function() {
+  carsInput.value = '200';
+  priceInput.value = '3 000 000';
+  var r = calculate(200, 3000000);
+  renderScenarios(r.results);
+  renderChart(r.results);
+  renderPriceTable(r.range);
+  renderRangeBadge(r.range, r.results);
+  document.getElementById('results').classList.add('visible');
+})();
 </script>
 </body>
 </html>
