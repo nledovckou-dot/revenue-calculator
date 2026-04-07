@@ -123,34 +123,48 @@ body{
   .hero-3d{display:none}
 }
 @media(max-width:600px){
-  .hero h1{font-size:28px}
-  .hero p{font-size:15px}
-  .header{padding:16px}
-  .main{padding:0 16px 40px;gap:20px}
-  .form-card{padding:20px;position:static}
-  .field input{font-size:16px;padding:12px 14px}
-  .field label{font-size:11px;letter-spacing:1px}
-  .btn-calculate{padding:14px;font-size:14px}
-  .scenarios-grid{grid-template-columns:1fr;gap:12px}
-  .scenario-card{padding:20px 18px}
-  .scenario-revenue{font-size:24px}
-  .chart-container,.details-section,.methodology,.benefits{padding:20px 16px}
-  .chart-container h3,.details-section h3,.methodology h3,.benefits h3{font-size:14px}
-  .bar-chart{height:160px;gap:10px}
-  .bar-value{font-size:11px;top:-22px}
-  .bar-label{font-size:10px}
-  .price-table-wrap{overflow-x:auto;margin:0 -16px;padding:0 16px}
-  .price-table{min-width:480px}
-  .price-table th,.price-table td{padding:8px 10px;font-size:12px}
+  .hero{padding:20px 16px 16px}
+  .hero h1{font-size:24px}
+  .hero p{font-size:14px;margin-bottom:0}
+  .header{padding:14px 16px}
+  .logo-text{font-size:18px}
+  .main{padding:0 16px 40px;gap:16px}
+  .form-card{padding:16px;position:static}
+  .form-card h2{font-size:16px;margin-bottom:4px}
+  .form-card .form-subtitle{margin-bottom:16px;font-size:12px}
+  .field{margin-bottom:14px}
+  .field input{font-size:16px;padding:10px 12px}
+  .field label{font-size:10px;letter-spacing:1px;margin-bottom:5px}
+  .field .hint{display:none}
+  .btn-calculate{padding:12px;font-size:13px}
+  .price-range-badge{margin-top:14px;padding:12px;font-size:12px}
+  .scenarios-grid{grid-template-columns:1fr;gap:10px}
+  .scenario-card{padding:16px 14px}
+  .scenario-revenue{font-size:22px}
+  .scenario-label{font-size:10px}
+  .scenario-conversion{font-size:12px;margin-bottom:12px}
+  .scenario-period{font-size:11px;margin-bottom:10px}
+  .scenario-year{padding-top:10px}
+  .scenario-year-label{font-size:10px}
+  .scenario-year-value{font-size:16px}
+  .scenario-sets{font-size:11px}
+  .chart-container,.details-section,.methodology,.benefits{padding:16px 14px}
+  .chart-container h3,.details-section h3,.methodology h3,.benefits h3{font-size:13px}
+  .bar-chart{height:140px;gap:8px}
+  .bar-value{font-size:10px;top:-20px}
+  .bar-label{font-size:9px}
+  .price-table-wrap{overflow-x:auto;margin:0 -14px;padding:0 14px}
+  .price-table{min-width:460px}
+  .price-table th,.price-table td{padding:7px 8px;font-size:11px}
   .price-table td:first-child{font-size:11px}
-  .formula-block{font-size:11px;padding:14px;line-height:1.7}
-  .benefits-grid{grid-template-columns:1fr;gap:10px}
-  .benefit-item{padding:12px}
-  .benefit-icon{width:34px;height:34px;min-width:34px;font-size:15px}
-  .benefit-title{font-size:13px}
+  .formula-block{font-size:10px;padding:12px;line-height:1.6}
+  .benefits-grid{grid-template-columns:1fr;gap:8px}
+  .benefit-item{padding:10px}
+  .benefit-icon{width:32px;height:32px;min-width:32px;font-size:14px;border-radius:8px}
+  .benefit-title{font-size:12px}
   .benefit-desc{font-size:11px}
-  .section-num{font-size:22px}
-  .footer{padding:24px 16px;font-size:12px}
+  .section-num{font-size:20px}
+  .footer{padding:20px 16px;font-size:11px}
   .decor-3d{display:none}
 }
 
@@ -860,7 +874,9 @@ document.getElementById('btn-calc').addEventListener('click', function() {
   renderRangeBadge(r.range, r.results);
   var el = document.getElementById('results');
   el.classList.add('visible');
-  el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  setTimeout(function() {
+    document.getElementById('scenarios-grid').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }, 50);
 });
 
 document.querySelectorAll('.field input').forEach(function(inp) {
